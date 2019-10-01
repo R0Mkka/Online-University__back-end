@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 
 import { IUser, ISafeUser } from '@models/user.models';
-import { ITokenObject, ITokenSignPayload } from '@models/auth.models';
+import { ITokenObject, ITokenSignPayload, IUserLikePayload } from '@models/auth.models';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +26,7 @@ export class AuthService {
     return null;
   }
 
-  public async login(user: ISafeUser): Promise<ITokenObject> {
+  public async login(user: IUserLikePayload): Promise<ITokenObject> {
     const payload: ITokenSignPayload = {
       sub: user.userId,
       userName: user.userName,

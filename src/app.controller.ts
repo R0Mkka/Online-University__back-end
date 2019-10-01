@@ -16,10 +16,4 @@ export class AppController {
   public async login(@Request() req): Promise<ITokenObject> {
     return this.authService.login(req.user);
   }
-
-  @UseGuards(AuthGuard())
-  @Get('me')
-  public getProfile(@Request() req) {
-    return req.user;
-  }
 }

@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 import { UsersService } from './users.service';
 
-import { IUser, UserDto } from '@models/user.models';
+import { IUser, ISafeUser, UserDto } from '@models/user.models';
 import { SqlResponce } from '@models/response.models';
 
 @Controller('users')
@@ -16,9 +17,10 @@ export class UsersController {
     return this.usersService.getUserList();
   }
 
-  @Get(':userName')
-  public getUserByUserName(@Param('userName') userName: string): Promise<IUser> {
-    return this.usersService.getUserByUserName(userName);
+  @UseGuards(AuthGuard())
+  @Get('/me')
+  public getCurrentUser(@Request() req): Promise<ISafeUser> {
+    return this.usersService.getUserById(req.user.userId);
   }
 
   @Post()

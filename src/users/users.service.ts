@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { Database } from '../database';
-import { IUser, UserDto } from '@models/user.models';
+import { IUser, UserDto, ISafeUser } from '@models/user.models';
 import { SqlResponce, ISqlSuccessResponce, ISqlErrorResponce } from '@models/response.models';
 import { UsersQueries } from './users.queries';
 
@@ -24,12 +24,15 @@ export class UsersService {
     });
   }
 
-  // TODO: Rethink the necceserity of this method
-  public getUserById(userId: string): Promise<IUser> {
+  public getUserById(userId: string): Promise<ISafeUser> {
     return this.getUserBySingleParam(
       UsersQueries.GetUserById,
       userId,
-    );
+    ).then((user: IUser) => {
+      const { password, ...safeUser } = user;
+
+      return safeUser;
+    });
   }
 
   public getUserByUserName(userName: string): Promise<IUser> {
