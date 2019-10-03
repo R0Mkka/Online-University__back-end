@@ -15,3 +15,7 @@ export interface IUserLikePayload {
   userName: string;
   roleId: Roles;
 }
+
+export interface IUserReq {
+  user: IUserLikePayload;
+}

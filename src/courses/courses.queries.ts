@@ -2,8 +2,11 @@ const TABLE_NAME = 'courses';
 
 export enum CoursesQueryList {
   GetUserCourseList = 'GetUserCourseList',
+  GetCourseById = 'GetCourseById',
+  GetCourseByCode = 'GetCourseByCode',
   CreateCourse = 'CreateCourse',
   CreateUserCourseConnection = 'CreateUserCourseConnection',
+  RemoveCourse = 'RemoveCourse',
 }
 
 export const CoursesQueries: { [key in CoursesQueryList]: string } = {
@@ -13,6 +16,7 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       ${TABLE_NAME}.courseName,
       ${TABLE_NAME}.courseDescription,
       ${TABLE_NAME}.courseCode,
+      ${TABLE_NAME}.courseOwnerId,
       ${TABLE_NAME}.addedAt
     FROM
       users
@@ -22,13 +26,38 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
     USING (courseId)
     WHERE users.userId = ?;
   `,
+  GetCourseById: `
+    SELECT
+      ${TABLE_NAME}.courseId,
+      ${TABLE_NAME}.courseName,
+      ${TABLE_NAME}.courseDescription,
+      ${TABLE_NAME}.courseCode,
+      ${TABLE_NAME}.courseOwnerId,
+      ${TABLE_NAME}.addedAt
+    FROM
+      courses
+    WHERE courseId = ?;
+  `,
+  GetCourseByCode: `
+    SELECT
+      ${TABLE_NAME}.courseId,
+      ${TABLE_NAME}.courseName,
+      ${TABLE_NAME}.courseDescription,
+      ${TABLE_NAME}.courseCode,
+      ${TABLE_NAME}.courseOwnerId,
+      ${TABLE_NAME}.addedAt
+    FROM
+      courses
+    WHERE courseCode = ?;
+  `,
   CreateCourse: `
     INSERT INTO ${TABLE_NAME} (
       courseName,
       courseDescription,
-      courseCode
+      courseCode,
+      courseOwnerId
     )
-    VALUES (?,?,?);
+    VALUES (?,?,?,?);
   `,
   CreateUserCourseConnection: `
     INSERT INTO user_course (
@@ -36,5 +65,12 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       courseId
     )
     VALUES (?,?);
+  `,
+  RemoveCourse: `
+    DELETE
+    FROM
+      courses
+    WHERE
+      courseId = ?;
   `,
 };

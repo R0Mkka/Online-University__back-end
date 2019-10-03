@@ -5,6 +5,7 @@ import { Database } from '../database';
 import { IUser, UserDto, ISafeUser } from '@models/user.models';
 import { SqlResponce, ISqlSuccessResponce, ISqlErrorResponce } from '@models/response.models';
 import { UsersQueries } from './users.queries';
+import { getItemBySingleParam } from '../shared/helpers';
 
 const db = Database.getInstance();
 
@@ -25,9 +26,9 @@ export class UsersService {
   }
 
   public getUserById(userId: string): Promise<ISafeUser> {
-    return this.getUserBySingleParam(
-      UsersQueries.GetUserById,
+    return getItemBySingleParam<IUser>(
       userId,
+      UsersQueries.GetUserById,
     ).then((user: IUser) => {
       const { password, ...safeUser } = user;
 
@@ -36,9 +37,9 @@ export class UsersService {
   }
 
   public getUserByUserName(userName: string): Promise<IUser> {
-    return this.getUserBySingleParam(
-      UsersQueries.GetUserByUserName,
+    return getItemBySingleParam<IUser>(
       userName,
+      UsersQueries.GetUserByUserName,
     );
   }
 
@@ -58,22 +59,6 @@ export class UsersService {
           }
 
           resolve(creationInfo);
-        },
-      );
-    });
-  }
-
-  private getUserBySingleParam(queryString: string, param: any): Promise<IUser> {
-    return new Promise((resolve) => {
-      db.query<IUser>(
-        queryString,
-        [param],
-        (error, users: IUser[]) => {
-          if (error || users.length === 0) {
-            resolve(null);
-          }
-
-          resolve(users[0]);
         },
       );
     });
