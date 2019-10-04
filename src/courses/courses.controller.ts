@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { CoursesService } from './courses.service';
 import { NoStudentsGuard } from './roles.guard';
-import { ICourse, CourseDto, IJoinCourse } from '@models/courses.models';
+import { ICourse, CourseDto, IJoinCourse, IFullCourse } from '@models/courses.models';
 import { IUserReq } from '@models/auth.models';
 import { SqlResponce } from '@models/response.models';
 
@@ -17,6 +17,12 @@ export class CoursesController {
   @Get()
   public getUserCourseList(@Request() req: IUserReq): Promise<ICourse[]> {
     return this.coursesService.getUserCourseList(req.user);
+  }
+
+  // TODO: Rethink about getting courses only for users which are in them
+  @Get(':courseId')
+  public getFullCourseInfo(@Param('courseId') courseId: string): Promise<IFullCourse> {
+    return this.coursesService.getFullCourseInfo(courseId);
   }
 
   @Post('/join')

@@ -2,7 +2,7 @@ import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/commo
 
 import { Database } from '../database';
 import { CoursesQueries } from './courses.queries';
-import { ICourse, CourseDto } from '@models/courses.models';
+import { ICourse, CourseDto, ICourseItem, IFullCourse } from '@models/courses.models';
 import { IUserLikePayload } from '@models/auth.models';
 import { SqlResponce, ISqlErrorResponce, ISqlSuccessResponce } from '@models/response.models';
 import { getItemBySingleParam } from '../shared/helpers';
@@ -24,6 +24,27 @@ export class CoursesService {
           }
 
           resolve(courses);
+        });
+    });
+  }
+
+  public async getFullCourseInfo(courseId: string): Promise<IFullCourse> {
+    const course: ICourse = await this.getCourseById(courseId);
+    const params = [courseId];
+
+    return new Promise((resolve, reject) => {
+      db.query<any>(
+        CoursesQueries.GetFullCourseInfo,
+        params,
+        (error, courseItems: ICourseItem[]) => {
+          if (error || !course) {
+            reject(new NotFoundException());
+          }
+
+          resolve({
+            ...course,
+            items: courseItems.filter((courseItem: ICourseItem) => courseItem.courseItemId !== null),
+          });
         });
     });
   }
