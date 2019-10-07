@@ -6,6 +6,7 @@ import { UsersService } from '../users/users.service';
 
 import { IUser, ISafeUser } from '@models/user.models';
 import { ITokenObject, ITokenSignPayload, IUserLikePayload } from '@models/auth.models';
+import { SqlResponce } from '@models/response.models';
 
 @Injectable()
 export class AuthService {
@@ -33,8 +34,14 @@ export class AuthService {
       roleId: user.roleId,
     };
 
+    await this.usersService.addEnteredUser(user.userId);
+
     return {
       token: this.jwtService.sign(payload),
     };
+  }
+
+  public logout(user: IUser): Promise<SqlResponce> {
+    return this.usersService.deleteEnteredUser(user.userId);
   }
 }

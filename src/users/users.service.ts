@@ -43,6 +43,68 @@ export class UsersService {
     );
   }
 
+  public addEnteredUser(userId: number): Promise<SqlResponce> {
+    const params = [userId];
+
+    return new Promise((resolve) => {
+      db.query<SqlResponce>(
+        UsersQueries.DeleteEnteredUser,
+        params,
+        (error: ISqlErrorResponce, deletingInfo: ISqlSuccessResponce) => {
+          if (error) {
+            resolve(error);
+          }
+
+          resolve(deletingInfo);
+        });
+    })
+    .then(() => {
+      return new Promise((resolve) => {
+        db.query<SqlResponce>(
+          UsersQueries.AddEnteredUser,
+          params,
+          (error: ISqlErrorResponce, addingInfo: ISqlSuccessResponce) => {
+            if (error) {
+              resolve(error);
+            }
+
+            resolve(addingInfo);
+          });
+      });
+    });
+  }
+
+  public deleteEnteredUser(userId: number): Promise<SqlResponce> {
+    const params = [userId];
+
+    return new Promise((resolve) => {
+      db.query<SqlResponce>(
+        UsersQueries.AddEnteredUserToArchive,
+        params,
+        (error: ISqlErrorResponce, addingInfo: ISqlSuccessResponce) => {
+          if (error) {
+            resolve(error);
+          }
+
+          resolve(addingInfo);
+        });
+    })
+    .then(() => {
+      return new Promise((resolve) => {
+        db.query<SqlResponce>(
+          UsersQueries.UpdateEnteredUser,
+          params,
+          (error: ISqlErrorResponce, updatingInfo: ISqlSuccessResponce) => {
+            if (error) {
+              resolve(error);
+            }
+
+            resolve(updatingInfo);
+          });
+      });
+    });
+  }
+
   public async createUser(userData: UserDto): Promise<SqlResponce> {
     const params = Object.values(userData);
     const hashedPassword = await bcrypt.hash(params.pop(), 10);
