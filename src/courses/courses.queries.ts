@@ -19,13 +19,19 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       ${TABLE_NAME}.courseDescription,
       ${TABLE_NAME}.courseCode,
       ${TABLE_NAME}.courseOwnerId,
-      ${TABLE_NAME}.addedAt
+      ${TABLE_NAME}.addedAt,
+      cd.courseStatus,
+      cd.coursePaletteId,
+      cd.courseIconId,
+      CONCAT(users.firstName, ' ', users.lastName) teacherName
     FROM
       users
     INNER JOIN user_course
     USING (userId)
     INNER JOIN ${TABLE_NAME}
     USING (courseId)
+    LEFT JOIN course_data cd
+    USING(courseId)
     WHERE users.userId = ?;
   `,
   GetCourseById: `
