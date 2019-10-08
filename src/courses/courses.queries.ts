@@ -1,8 +1,10 @@
 const TABLE_NAME = 'courses';
+const COURSE_ITEMS_TABLE = 'course_items';
 
 export enum CoursesQueryList {
   GetUserCourseList = 'GetUserCourseList',
   GetCourseById = 'GetCourseById',
+  GetFullCourseInfo = 'GetFullCourseInfo',
   GetCourseByCode = 'GetCourseByCode',
   CreateCourse = 'CreateCourse',
   CreateUserCourseConnection = 'CreateUserCourseConnection',
@@ -33,10 +35,33 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       ${TABLE_NAME}.courseDescription,
       ${TABLE_NAME}.courseCode,
       ${TABLE_NAME}.courseOwnerId,
-      ${TABLE_NAME}.addedAt
+      ${TABLE_NAME}.addedAt,
+      cd.courseStatus,
+      cd.coursePaletteId,
+      cd.courseIconId,
+      CONCAT(users.firstName, ' ', users.lastName) teacherName
     FROM
-      courses
+      ${TABLE_NAME}
+    LEFT JOIN
+      users
+    ON users.userId = ${TABLE_NAME}.courseOwnerId
+    LEFT JOIN
+      course_data cd
+    USING(courseId)
     WHERE courseId = ?;
+  `,
+  GetFullCourseInfo: `
+    SELECT
+      ${COURSE_ITEMS_TABLE}.courseItemId,
+      ${COURSE_ITEMS_TABLE}.courseItemTitle,
+      ${COURSE_ITEMS_TABLE}.courseItemText,
+      ${COURSE_ITEMS_TABLE}.addedAt
+    FROM
+      ${TABLE_NAME}
+    LEFT JOIN
+      ${COURSE_ITEMS_TABLE}
+    USING (courseId)
+      WHERE ${TABLE_NAME}.courseId = ?;
   `,
   GetCourseByCode: `
     SELECT
@@ -47,17 +72,18 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       ${TABLE_NAME}.courseOwnerId,
       ${TABLE_NAME}.addedAt
     FROM
-      courses
+      ${TABLE_NAME}
     WHERE courseCode = ?;
   `,
   CreateCourse: `
     INSERT INTO ${TABLE_NAME} (
       courseName,
       courseDescription,
+      courseGroupName,
       courseCode,
       courseOwnerId
     )
-    VALUES (?,?,?,?);
+    VALUES (?,?,?,?,?);
   `,
   CreateUserCourseConnection: `
     INSERT INTO user_course (
@@ -69,7 +95,7 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
   RemoveCourse: `
     DELETE
     FROM
-      courses
+      ${TABLE_NAME}
     WHERE
       courseId = ?;
   `,

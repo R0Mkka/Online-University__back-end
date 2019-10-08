@@ -3,7 +3,6 @@ import { Roles } from './roles.models';
 export interface ISafeUser {
   userId: number;
   roleId: Roles;
-  roleName: string;
   userName: string;
   firstName: string;
   lastName: string;

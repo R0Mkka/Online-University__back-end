@@ -21,8 +21,7 @@ export const UsersQueries: { [key in UserQueryList]: string } = {
   GetUserById: `
     SELECT
       u.userId,
-      r.roleId,
-      r.roleName,
+      u.roleId,
       u.userName,
       u.firstName,
       u.lastName,
@@ -40,9 +39,6 @@ export const UsersQueries: { [key in UserQueryList]: string } = {
         FROM users
         WHERE userId = ?
       ) as u
-    LEFT JOIN
-      roles r
-    USING(roleId)
     LEFT JOIN
       entered_users eu
     ON
