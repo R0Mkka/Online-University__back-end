@@ -4,17 +4,17 @@ import { MorganModule, MorganInterceptor } from 'nest-morgan';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CousesModule } from './courses/courses.module';
+import { ChatModule } from './chat/chat.module';
 
 import { AppController } from './app.controller';
-// NEW
-import { AppGateway } from './app.gateway';
 
 @Module({
   imports: [
     MorganModule.forRoot(),
+    AuthModule,
     UsersModule,
     CousesModule,
-    AuthModule,
+    ChatModule,
   ],
   controllers: [
     AppController,
@@ -24,8 +24,6 @@ import { AppGateway } from './app.gateway';
       provide: APP_INTERCEPTOR,
       useClass: MorganInterceptor('combined'),
     },
-    // NEW
-    AppGateway,
   ],
 })
 export class AppModule {}
