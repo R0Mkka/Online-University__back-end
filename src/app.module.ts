@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { CousesModule } from './courses/courses.module';
 
 import { AppController } from './app.controller';
+// NEW
+import { AppGateway } from './app.gateway';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { AppController } from './app.controller';
       provide: APP_INTERCEPTOR,
       useClass: MorganInterceptor('combined'),
     },
+    // NEW
+    AppGateway,
   ],
 })
 export class AppModule {}
