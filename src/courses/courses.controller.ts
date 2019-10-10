@@ -1,13 +1,16 @@
 import { Controller, UseGuards, Get, Request, Post, Body, Delete, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 
 import { CoursesService } from './courses.service';
 import { NoStudentsGuard } from './roles.guard';
-import { ICourse, CourseDto, IJoinCourse, IFullCourse } from '@models/courses.models';
+import { ICourse, CourseDto, JoinCourseDto, IFullCourse } from '../models/courses.models';
 import { IUserReq } from '@models/auth.models';
 import { SqlResponce } from '@models/response.models';
 
 @UseGuards(AuthGuard())
+@ApiUseTags('courses')
+@ApiBearerAuth()
 @Controller('courses')
 export class CoursesController {
   constructor(
@@ -26,8 +29,13 @@ export class CoursesController {
   }
 
   @Post('/join')
-  public createConnection(@Body() body: IJoinCourse, @Request() req: IUserReq): Promise<SqlResponce> {
+  public joinCourse(@Body() body: JoinCourseDto, @Request() req: IUserReq): Promise<SqlResponce> {
     return this.coursesService.createConnection(body.courseCode, req.user);
+  }
+
+  @Delete('/leave/:courseId')
+  public leaveCourse(@Param('courseId') courseId: string, @Request() req: IUserReq): Promise<SqlResponce> {
+    return this.coursesService.destroyConnection(courseId, req.user);
   }
 
   @UseGuards(NoStudentsGuard)

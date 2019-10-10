@@ -4,9 +4,9 @@ import * as bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service';
 
-import { IUser, ISafeUser } from '@models/user.models';
-import { ITokenObject, ITokenSignPayload, IUserLikePayload } from '@models/auth.models';
-import { SqlResponce } from '@models/response.models';
+import { IUser, ISafeUser, UserDto } from '../models/user.models';
+import { ITokenObject, ITokenSignPayload, IUserLikePayload } from '../models/auth.models';
+import { SqlResponce } from '../models/response.models';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +41,7 @@ export class AuthService {
     };
   }
 
-  public logout(user: IUser): Promise<SqlResponce> {
+  public logout(user: UserDto): Promise<SqlResponce> {
     return this.usersService.deleteEnteredUser(user.userId);
   }
 }

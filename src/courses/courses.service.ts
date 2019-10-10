@@ -79,6 +79,23 @@ export class CoursesService {
     return this.createUserCourseConnection(payload.userId, course.courseId);
   }
 
+  public destroyConnection(courseCode: string, payload: IUserLikePayload): Promise<SqlResponce> {
+    const params = [courseCode, payload.userId];
+
+    return new Promise((resolve) => {
+      db.query(
+        CoursesQueries.DestroyUserCourseConnection,
+        params,
+        (error: ISqlErrorResponce, destroyingInfo: ISqlSuccessResponce) => {
+          if (error) {
+            resolve(error);
+          }
+
+          resolve(destroyingInfo);
+        });
+    });
+  }
+
   public async removeCourse(courseId: string, payload: IUserLikePayload): Promise<SqlResponce> {
     const course: ICourse = await this.getCourseById(courseId);
 

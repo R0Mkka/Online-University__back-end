@@ -1,3 +1,5 @@
+import { ApiModelProperty } from '@nestjs/swagger';
+
 export interface ICourse {
   courseId: number;
   courseName: string;
@@ -17,8 +19,9 @@ export interface CourseDto {
   courseCode: string;
 }
 
-export interface IJoinCourse {
-  courseCode: string;
+export class JoinCourseDto {
+  @ApiModelProperty()
+  public courseCode: string;
 }
 
 export interface ICourseItem {

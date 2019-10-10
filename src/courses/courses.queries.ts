@@ -8,6 +8,7 @@ export enum CoursesQueryList {
   GetCourseByCode = 'GetCourseByCode',
   CreateCourse = 'CreateCourse',
   CreateUserCourseConnection = 'CreateUserCourseConnection',
+  DestroyUserCourseConnection = 'DestroyUserCourseConnection',
   RemoveCourse = 'RemoveCourse',
 }
 
@@ -97,6 +98,13 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       courseId
     )
     VALUES (?,?);
+  `,
+  DestroyUserCourseConnection: `
+      DELETE
+      FROM
+        user_course
+      WHERE
+        courseId = ? AND userId = ?;
   `,
   RemoveCourse: `
     DELETE
