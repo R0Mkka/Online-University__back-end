@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { MorganModule, MorganInterceptor } from 'nest-morgan';
-import { AuthModule } from './auth/auth.module';
+
 import { UsersModule } from './users/users.module';
 import { CousesModule } from './courses/courses.module';
+import { ChatsModule } from './chats/chats.module';
+import { AuthModule } from './auth/auth.module';
 
 import { AppController } from './app.controller';
 
@@ -12,6 +14,7 @@ import { AppController } from './app.controller';
     MorganModule.forRoot(),
     UsersModule,
     CousesModule,
+    ChatsModule,
     AuthModule,
   ],
   controllers: [
