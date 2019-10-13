@@ -6,6 +6,7 @@ export interface ICourse {
   courseDescription: string;
   courseCode: string;
   courseOwnerId: number;
+  chatId: string;
   addedAt: string;
 }
 
@@ -15,6 +16,7 @@ export interface IFullCourse extends ICourse {
 
 export interface CourseDto {
   courseName: string;
+  courseGroupName: string;
   courseDescription: string;
   courseCode: string;
 }

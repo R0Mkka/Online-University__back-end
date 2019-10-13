@@ -5,6 +5,7 @@ import { ChatsService } from './chats.service';
 
 import { ChatsController } from './chats.controller';
 
+// TODO: Make gateways!
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
