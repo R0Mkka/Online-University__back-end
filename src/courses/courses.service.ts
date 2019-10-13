@@ -1,16 +1,22 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 
+import { ChatsService } from '../chats/chats.service';
+
 import { Database } from '../database';
 import { CoursesQueries } from './courses.queries';
-import { ICourse, CourseDto, IFullCourse, ICourseItem } from '@models/courses.models';
-import { IUserLikePayload } from '@models/auth.models';
-import { SqlResponce, ISqlErrorResponce, ISqlSuccessResponce } from '@models/response.models';
+import { ICourse, CourseDto, IFullCourse, ICourseItem } from '../models/courses.models';
+import { IUserLikePayload } from '../models/auth.models';
+import { SqlResponce, ISqlErrorResponce, ISqlSuccessResponce } from '../models/response.models';
 import { getItemBySingleParam } from '../shared/helpers';
 
 const db = Database.getInstance();
 
 @Injectable()
 export class CoursesService {
+  constructor(
+    private readonly chatsService: ChatsService,
+  ) {}
+
   public getUserCourseList(payload: IUserLikePayload): Promise<ICourse[]> {
     const params = [payload.userId];
 
@@ -50,23 +56,27 @@ export class CoursesService {
   }
 
   public createCourse(course: CourseDto, payload: IUserLikePayload): Promise<SqlResponce> {
-    const params = Object.values(course).concat(payload.userId);
+    return this.chatsService
+      .createChat(`Чат курса '${course.courseName}'`, payload)
+      .then((response: ISqlSuccessResponce) => {
+        const params = Object.values(course).concat(payload.userId).concat(response.insertId);
 
-    return new Promise((resolve) => {
-      db.query<SqlResponce>(
-        CoursesQueries.CreateCourse,
-        params,
-        (error: ISqlErrorResponce, creationInfo: ISqlSuccessResponce) => {
-          if (error) {
-            resolve(error);
-          }
+        return new Promise((resolve) => {
+          db.query<SqlResponce>(
+            CoursesQueries.CreateCourse,
+            params,
+            (error: ISqlErrorResponce, creationInfo: ISqlSuccessResponce) => {
+              if (error) {
+                resolve(error);
+              }
 
-          resolve(creationInfo);
+              resolve(creationInfo);
+            });
+        })
+        .then((newResponse: ISqlSuccessResponce) => {
+          return this.createUserCourseConnection(payload.userId, newResponse.insertId);
         });
-    })
-    .then((response: ISqlSuccessResponce) => {
-      return this.createUserCourseConnection(payload.userId, response.insertId);
-    });
+      });
   }
 
   public async createConnection(courseCode: string, payload: IUserLikePayload): Promise<SqlResponce> {
@@ -76,7 +86,10 @@ export class CoursesService {
       throw new NotFoundException();
     }
 
-    return this.createUserCourseConnection(payload.userId, course.courseId);
+    return this.createUserCourseConnection(payload.userId, course.courseId)
+      .then((_: ISqlSuccessResponce) => {
+        return this.chatsService.createChatUserConnection(course.chatId, payload);
+      });
   }
 
   public destroyConnection(courseCode: string, payload: IUserLikePayload): Promise<SqlResponce> {

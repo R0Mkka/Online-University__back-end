@@ -12,6 +12,7 @@ const swaggerOptions = new DocumentBuilder()
   .addTag('logout')
   .addTag('users')
   .addTag('courses')
+  .addTag('chats')
   .addBearerAuth()
   .build();
 

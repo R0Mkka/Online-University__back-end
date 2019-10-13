@@ -88,9 +88,10 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       courseDescription,
       courseGroupName,
       courseCode,
-      courseOwnerId
+      courseOwnerId,
+      chatId
     )
-    VALUES (?,?,?,?,?);
+    VALUES (?,?,?,?,?,?);
   `,
   CreateUserCourseConnection: `
     INSERT INTO user_course (
