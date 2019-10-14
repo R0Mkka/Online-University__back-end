@@ -77,6 +77,7 @@ export const CoursesQueries: { [key in CoursesQueryList]: string } = {
       ${TABLE_NAME}.courseDescription,
       ${TABLE_NAME}.courseCode,
       ${TABLE_NAME}.courseOwnerId,
+      ${TABLE_NAME}.chatId,
       ${TABLE_NAME}.addedAt
     FROM
       ${TABLE_NAME}

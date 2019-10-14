@@ -5,6 +5,7 @@ export interface IChat {
   imageId: number;
   chatName: string;
   createdAt: string;
+  messages: IMessage[];
 }
 
 export interface IJoinChatDto {
@@ -14,4 +15,11 @@ export interface IJoinChatDto {
 export class CreateChatDto {
   @ApiModelProperty()
   public chatName: string;
+}
+
+export interface IMessage {
+  messageId: number;
+  messageText: string;
+  chatId: number;
+  userId: number;
 }

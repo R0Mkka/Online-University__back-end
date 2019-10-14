@@ -4,7 +4,8 @@ import { Database } from '../database';
 import { ChatsQueries } from './chats.queries';
 import { IUserLikePayload } from '../models/auth.models';
 import { ISqlErrorResponce, ISqlSuccessResponce, SqlResponce } from '../models/response.models';
-import { IChat } from '../models/chats.models';
+import { IChat, IMessage } from '../models/chats.models';
+import { getItemBySingleParam } from '../shared/helpers';
 
 const db = Database.getInstance();
 
@@ -24,6 +25,19 @@ export class ChatsService {
 
           resolve(chats);
         });
+    });
+  }
+
+  public getChat(chatId: string): Promise<IChat> {
+    return getItemBySingleParam(
+      chatId,
+      ChatsQueries.GetChat,
+    ).then(async (chat: IChat) => {
+      const messages: IMessage[] = await this.getChatMessages(chat.chatId);
+
+      chat.messages = messages;
+
+      return chat;
     });
   }
 
@@ -57,6 +71,40 @@ export class ChatsService {
           }
 
           resolve(creationInfo);
+        });
+    });
+  }
+
+  public addMessage(messageObject: IMessage): Promise<SqlResponce> {
+    const params = Object.values(messageObject);
+
+    return new Promise((resolve, reject) => {
+      db.query(
+        ChatsQueries.AddMessage,
+        params,
+        (error: ISqlErrorResponce, addingInfo: ISqlSuccessResponce) => {
+          if (error) {
+            reject(error);
+          }
+
+          resolve(addingInfo);
+        });
+    });
+  }
+
+  private getChatMessages(chatId: number): Promise<IMessage[]> {
+    const params = [chatId];
+
+    return new Promise((resolve, reject) => {
+      db.query(
+        ChatsQueries.GetChatMessages,
+        params,
+        (error: ISqlErrorResponce, messages: IMessage[]) => {
+          if (error) {
+            reject(error);
+          }
+
+          resolve(messages);
         });
     });
   }
