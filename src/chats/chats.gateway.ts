@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import { ChatsService } from './chats.service';
 import { IDBMessage } from '../models/chats.models';
 
-@WebSocketGateway()
+@WebSocketGateway(3001)
 export class ChatsGateway implements OnGatewayInit {
   @WebSocketServer()
   private wss: Server;
