@@ -3,7 +3,7 @@ import { Logger } from '@nestjs/common';
 import { Server } from 'socket.io';
 
 import { ChatsService } from './chats.service';
-import { IMessage } from '../models/chats.models';
+import { IDBMessage } from '../models/chats.models';
 
 @WebSocketGateway()
 export class ChatsGateway implements OnGatewayInit {
@@ -26,7 +26,7 @@ export class ChatsGateway implements OnGatewayInit {
       messageText: data.messageText,
       chatId: data.chatId,
       userId: data.user.userId,
-    } as IMessage);
+    } as IDBMessage);
 
     this.wss.emit(`msgToClient:chatId${data.chatId}`, {
       messageText: data.messageText,

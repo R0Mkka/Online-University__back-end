@@ -4,7 +4,7 @@ import { Database } from '../database';
 import { ChatsQueries } from './chats.queries';
 import { IUserLikePayload } from '../models/auth.models';
 import { ISqlErrorResponce, ISqlSuccessResponce, SqlResponce } from '../models/response.models';
-import { IChat, IMessage } from '../models/chats.models';
+import { IChat, IResponseMessage, IDBMessage } from '../models/chats.models';
 import { getItemBySingleParam } from '../shared/helpers';
 
 const db = Database.getInstance();
@@ -33,7 +33,7 @@ export class ChatsService {
       chatId,
       ChatsQueries.GetChat,
     ).then(async (chat: IChat) => {
-      const messages: IMessage[] = await this.getChatMessages(chat.chatId);
+      const messages: IResponseMessage[] = await this.getChatMessages(chat.chatId);
 
       chat.messages = messages;
 
@@ -75,7 +75,7 @@ export class ChatsService {
     });
   }
 
-  public addMessage(messageObject: IMessage): Promise<SqlResponce> {
+  public addMessage(messageObject: IDBMessage): Promise<SqlResponce> {
     const params = Object.values(messageObject);
 
     return new Promise((resolve, reject) => {
@@ -92,14 +92,14 @@ export class ChatsService {
     });
   }
 
-  private getChatMessages(chatId: number): Promise<IMessage[]> {
+  private getChatMessages(chatId: number): Promise<IResponseMessage[]> {
     const params = [chatId];
 
     return new Promise((resolve, reject) => {
       db.query(
         ChatsQueries.GetChatMessages,
         params,
-        (error: ISqlErrorResponce, messages: IMessage[]) => {
+        (error: ISqlErrorResponce, messages: IResponseMessage[]) => {
           if (error) {
             reject(error);
           }

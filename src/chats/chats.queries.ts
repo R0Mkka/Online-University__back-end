@@ -14,7 +14,7 @@ export const ChatsQueries: { [key in ChatsQueriesList]: string } = {
   // TODO: Think about image
   GetUserChats: `
     SELECT
-      c.chatId, c.imageId, c.chatName, c.createdAt
+      c.chatId, cu.userId creatorId, c.imageId, c.chatName, c.createdAt
     FROM
       ${CHAT_USER} cu
     LEFT JOIN
@@ -33,9 +33,15 @@ export const ChatsQueries: { [key in ChatsQueriesList]: string } = {
   `,
   GetChatMessages: `
     SELECT
-      *
+      m.messageId,
+      m.messageText,
+      m.userId,
+      m.sentAt,
+      CONCAT(u.firstName, ' ', u.lastName) authorName
     FROM
-      message
+      message m
+    LEFT JOIN users u
+    USING (userId)
     WHERE
       chatId = ?;
   `,

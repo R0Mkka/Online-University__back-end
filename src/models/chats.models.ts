@@ -2,10 +2,11 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 export interface IChat {
   chatId: number;
+  creatorId: number;
   imageId: number;
   chatName: string;
   createdAt: string;
-  messages: IMessage[];
+  messages: IResponseMessage[];
 }
 
 export interface IJoinChatDto {
@@ -20,6 +21,14 @@ export class CreateChatDto {
 export interface IMessage {
   messageId: number;
   messageText: string;
-  chatId: number;
   userId: number;
+  sentAt: string;
+}
+
+export interface IDBMessage extends IMessage {
+  chatId: number;
+}
+
+export interface IResponseMessage extends IMessage {
+  authorName: string;
 }
