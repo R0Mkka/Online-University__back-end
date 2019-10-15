@@ -5,6 +5,7 @@ export enum ChatsQueriesList {
   GetUserChats = 'GetUserChats',
   GetChat = 'GetChat',
   GetChatMessages = 'GetChatMessages',
+  GetChatUsers = 'GetChatUsers',
   CreateChat = 'CreateChat',
   CreateChatConnection = 'CreateChatConnection',
   AddMessage = 'AddMessage',
@@ -42,6 +43,30 @@ export const ChatsQueries: { [key in ChatsQueriesList]: string } = {
       message m
     LEFT JOIN users u
     USING (userId)
+    WHERE
+      chatId = ?;
+  `,
+  GetChatUsers: `
+    SELECT
+      u.userId,
+      u.firstName,
+      u.lastName,
+      u.educationalInstitution,
+      u.email,
+      u.accountImageId,
+      u.roleId,
+      u.registeredAt,
+      u.themeId,
+      u.languageId,
+      u.userName,
+      eu.enteredAt,
+      eu.statusId
+    FROM
+      ${CHAT_USER}
+    LEFT JOIN users u
+    USING (userId)
+    LEFT JOIN entered_users eu
+    ON eu.enteredUserId = u.userId
     WHERE
       chatId = ?;
   `,

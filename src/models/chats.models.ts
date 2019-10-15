@@ -1,5 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 
+import { ISafeUser } from './user.models';
+
 export interface IChat {
   chatId: number;
   creatorId: number;
@@ -7,6 +9,7 @@ export interface IChat {
   chatName: string;
   createdAt: string;
   messages: IResponseMessage[];
+  users: ISafeUser[];
 }
 
 export interface IJoinChatDto {

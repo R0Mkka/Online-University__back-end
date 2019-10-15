@@ -32,6 +32,8 @@ export class ChatsGateway implements OnGatewayInit {
       messageText: data.messageText,
       chatId: data.chatId,
       userId: data.user.userId,
+      authorName: `${data.user.firstName} ${data.user.lastName}`,
+      sentAt: Date.now().toLocaleString(),
     });
   }
 }

@@ -5,6 +5,7 @@ import { ChatsQueries } from './chats.queries';
 import { IUserLikePayload } from '../models/auth.models';
 import { ISqlErrorResponce, ISqlSuccessResponce, SqlResponce } from '../models/response.models';
 import { IChat, IResponseMessage, IDBMessage } from '../models/chats.models';
+import { ISafeUser } from '../models/user.models';
 import { getItemBySingleParam } from '../shared/helpers';
 
 const db = Database.getInstance();
@@ -34,8 +35,10 @@ export class ChatsService {
       ChatsQueries.GetChat,
     ).then(async (chat: IChat) => {
       const messages: IResponseMessage[] = await this.getChatMessages(chat.chatId);
+      const users: ISafeUser[] = await this.getChatUsers(chat.chatId);
 
       chat.messages = messages;
+      chat.users = users;
 
       return chat;
     });
@@ -105,6 +108,23 @@ export class ChatsService {
           }
 
           resolve(messages);
+        });
+    });
+  }
+
+  public getChatUsers(chatId: number): Promise<ISafeUser[]> {
+    const params = [chatId];
+
+    return new Promise((resolve, reject) => {
+      db.query(
+        ChatsQueries.GetChatUsers,
+        params,
+        (error: ISqlErrorResponce, users: ISafeUser[]) => {
+          if (error) {
+            reject(error);
+          }
+
+          resolve(users);
         });
     });
   }
