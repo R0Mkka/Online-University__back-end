@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 import { Database } from '../database';
@@ -111,13 +111,13 @@ export class UsersService {
 
     params.push(hashedPassword);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       db.query<SqlResponce>(
         UsersQueries.CreateUser,
         params,
         (error: ISqlErrorResponce, creationInfo: ISqlSuccessResponce) => {
           if (error) {
-            resolve(error);
+            reject(new BadRequestException());
           }
 
           resolve(creationInfo);
