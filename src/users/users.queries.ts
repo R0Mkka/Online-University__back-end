@@ -36,7 +36,7 @@ export const UsersQueries: { [key in UserQueryList]: string } = {
     FROM
       (
         SELECT *
-        FROM users
+        FROM ${TABLE_NAME}
         WHERE userId = ?
       ) as u
     LEFT JOIN
