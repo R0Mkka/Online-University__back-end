@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import { ChatsService } from './chats.service';
 import { IDBMessage } from '../models/chats.models';
 
-@WebSocketGateway(3001)
+@WebSocketGateway()
 export class ChatsGateway implements OnGatewayInit {
   @WebSocketServer()
   private wss: Server;
@@ -33,7 +33,7 @@ export class ChatsGateway implements OnGatewayInit {
       chatId: data.chatId,
       userId: data.user.userId,
       authorName: `${data.user.firstName} ${data.user.lastName}`,
-      sentAt: Date.now().toLocaleString(),
+      sentAt: Date.now().toString(),
     });
   }
 }
