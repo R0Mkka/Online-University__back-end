@@ -95,9 +95,9 @@ export const UsersQueries: { [key in UserQueryList]: string } = {
   CreateUser: `
     INSERT INTO ${TABLE_NAME} (
       roleId,
-      userName,
       firstName,
       lastName,
+      userName,
       educationalInstitution,
       email,
       password

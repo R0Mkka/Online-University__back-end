@@ -4,8 +4,9 @@ import { Server } from 'socket.io';
 
 import { ChatsService } from './chats.service';
 import { IDBMessage } from '../models/chats.models';
+import { ISqlSuccessResponce } from '@models/response.models';
 
-@WebSocketGateway(3001)
+@WebSocketGateway()
 export class ChatsGateway implements OnGatewayInit {
   @WebSocketServer()
   private wss: Server;
@@ -21,19 +22,20 @@ export class ChatsGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage('msgToServer')
-  public hangleMessage(_: any, data: any): void {
-    this.chatsService.addMessage({
+  public async hangleMessage(_: any, data: any): Promise<void> {
+    const addedMessageInfo: ISqlSuccessResponce = await this.chatsService.addMessage({
       messageText: data.messageText,
       chatId: data.chatId,
       userId: data.user.userId,
-    } as IDBMessage);
+    } as IDBMessage) as ISqlSuccessResponce;
 
     this.wss.emit(`msgToClient:chatId${data.chatId}`, {
+      messageId: addedMessageInfo.insertId,
       messageText: data.messageText,
       chatId: data.chatId,
       userId: data.user.userId,
       authorName: `${data.user.firstName} ${data.user.lastName}`,
-      sentAt: Date.now().toLocaleString(),
+      sentAt: Date.now().toString(),
     });
   }
 }
