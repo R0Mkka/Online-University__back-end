@@ -1,13 +1,13 @@
 import * as dotenv from 'dotenv';
 
 import { MySql } from './mysql';
-import { IConnectionConfig, IConnection, IQueryCallback } from '@models/database.models';
+// import { IConnectionConfig, IConnection, IQueryCallback } from '@models/database.models';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
 }
 
-const connectionConfig: IConnectionConfig = {
+const connectionConfig: any = {
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   user: process.env.DB_USER,
@@ -18,7 +18,7 @@ const connectionConfig: IConnectionConfig = {
 export class Database {
   private static instance: Database;
 
-  private connection: IConnection;
+  private connection: any;
 
   private constructor() {
     this.connection = MySql.createConnection(connectionConfig);
@@ -42,11 +42,11 @@ export class Database {
     this.parameterizedQuery<T>(args[0], args[1], args[2]);
   }
 
-  private queryWithoutParams<T>(queryString: string, callback: IQueryCallback<T>): void {
-    this.connection.query<T>(queryString, callback);
+  private queryWithoutParams<T>(queryString: string, callback: any): void {
+    this.connection.query(queryString, callback);
   }
 
-  private parameterizedQuery<T>(queryString: string, params: any[], callback: IQueryCallback<T>): void {
-    this.connection.query<T>(queryString, params, callback);
+  private parameterizedQuery<T>(queryString: string, params: any[], callback: any): void {
+    this.connection.query(queryString, params, callback);
   }
 }

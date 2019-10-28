@@ -1,6 +1,6 @@
 import * as mysql from 'mysql2';
 
-import { IConnectionConfig, IConnection } from '@models/database.models';
+// import { IConnectionConfig, IConnection } from '@models/database.models';
 
 export class MySql {
   public static createConnection({
@@ -11,7 +11,7 @@ export class MySql {
     database,
     charset,
     timezone,
-  }: IConnectionConfig): IConnection {
+  }: any): any {
     return mysql.createConnection({
       host: host || 'localhost',
       port: port || 3306,
